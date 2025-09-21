@@ -1,12 +1,14 @@
 services:
   - type: web
     name: playwright-html-to-png-api
-    env: docker
-    dockerfilePath: ./Dockerfile
+    env: node
     region: oregon  # or your preferred region
     plan: starter   # or standard/pro based on your needs
-    dockerContext: .
     healthCheckPath: /health
+    
+    # Build and start commands for Node environment
+    buildCommand: npm ci && npx playwright install --with-deps chromium
+    startCommand: npm start
     
     # Environment variables
     envVars:
