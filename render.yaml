@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: playwright-html-to-png-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon  # or your preferred region
+    plan: starter   # or standard/pro based on your needs
+    dockerContext: .
+    healthCheckPath: /health
+    
+    # Environment variables
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: RATE_LIMIT_MAX
+        value: 200
+      - key: ALLOWED_ORIGINS
+        value: "*"  # Set to your n8n domain for security
+        
+    # Build settings
+    buildCommand: npm ci --only=production
+    startCommand: npm start
+    
+    # Resource allocation
+    disk:
+      name: data
+      sizeGB: 1
+      
+    # Auto-scaling (for paid plans)
+    autoDeploy: true
+    
+    # Health check configuration
+    healthCheckPath: /health
+    
+    # Headers for better security
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
